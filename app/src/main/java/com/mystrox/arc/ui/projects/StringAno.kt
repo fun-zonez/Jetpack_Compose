@@ -1,4 +1,4 @@
-package com.mystrox.arc
+package com.mystrox.arc.ui.projects
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
+import com.mystrox.arc.R
 
 
 @RequiresApi(Build.VERSION_CODES.Q)

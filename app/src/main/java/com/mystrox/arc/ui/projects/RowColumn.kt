@@ -1,4 +1,4 @@
-package com.mystrox.arc
+package com.mystrox.arc.ui.projects
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
@@ -36,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mystrox.arc.R
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
