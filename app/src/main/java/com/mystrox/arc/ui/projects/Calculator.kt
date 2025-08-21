@@ -78,9 +78,9 @@ fun Calculator(){
                     .border(
                         width = 2.dp,
                         color = Color.Gray,
-//                        shape = TODO()
+//                        shape = TODO("Make it rectangle Button")
                     ),
-//            maxLines = 1,
+            maxLines = 1,
                 textAlign = TextAlign.Right,
                 overflow = TextOverflow.Visible,
                 style = TextStyle(
