@@ -6,30 +6,22 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
-import androidx.compose.material3.CardDefaults.cardElevation
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key.Companion.Calculator
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -38,6 +30,7 @@ import com.mystrox.arc.ui.ProjectCard
 import com.mystrox.arc.ui.projects.Attempt1
 import com.mystrox.arc.ui.projects.Calculator
 import com.mystrox.arc.ui.projects.StringAno
+import com.mystrox.arc.ui.projects.WebViewX
 import com.mystrox.arc.ui.theme.ArcTheme
 
 class MainActivity : ComponentActivity() {
@@ -70,6 +63,9 @@ fun ArcApp() {
         }
         composable(Routes.Project3.route) {
             Calculator()
+        }
+        composable(Routes.Project4.route) {
+            WebViewX()
         }
     }
 }
@@ -127,14 +123,15 @@ fun Home(navController: NavController) {
                     ProjectCard(3, "Calculator","19-08-2025", navController = navController)
 
                 }
-//                item {
-//
-//                    ProjectCard(
-//                        4, "Project 5",
-//                        navController = navController
-//                    )
-//
-//                }
+                item {
+                    ProjectCard(
+                        4,
+                        "Project 5",
+                        "20-08-2025",
+                        navController = navController
+                    )
+
+                }
             }
         }
 }
@@ -145,6 +142,7 @@ sealed class Routes(val route: String) {
     data object Project1 : Routes("project1")
     data object Project2 : Routes("project2")
     data object Project3 : Routes("project3")
+    data object Project4 : Routes("project4")
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)
