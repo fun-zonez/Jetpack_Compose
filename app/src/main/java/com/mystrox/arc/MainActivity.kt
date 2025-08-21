@@ -73,6 +73,7 @@ fun ArcApp() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(navController: NavController) {
+//    var projectList = li
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -97,13 +98,13 @@ fun Home(navController: NavController) {
         },
         modifier = Modifier
             .fillMaxSize()
-//            .background(Color.Green)
+            .background(Color.Green)
     ) { innerPading ->
             LazyVerticalGrid(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPading)
-                    .background(Color.Gray)
+                    .background(Color(0xFF37458D))
 //            .verticalScroll(state = rememberScrollState())
                     .padding(top = 40.dp, start = 30.dp, end = 30.dp),
                 verticalArrangement = Arrangement.Top,
