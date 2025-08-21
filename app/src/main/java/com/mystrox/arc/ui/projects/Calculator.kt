@@ -8,12 +8,18 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -94,7 +100,7 @@ fun Calculator(){
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(4),
-            contentPadding = PaddingValues(20.dp),
+//            contentPadding = PaddingValues(20.dp),
         ) {
             itemsIndexed(symbols){ index, symb ->
                 ElevatedButton(
@@ -103,7 +109,9 @@ fun Calculator(){
                             text = ""
                         }
                         else if (index == 2){
-                            text = text.take(text.lastIndex)
+                            if(text.isNotEmpty()){
+                                text = text.take(text.lastIndex)
+                            }
                         }
                         else if (index == 19){
                             text = expEv(text).toString()
@@ -114,8 +122,11 @@ fun Calculator(){
 //                        scrollState.animateScrollTo(scrollState.maxValue)
 
                     },
+                    shape = ButtonDefaults.elevatedShape,
                     modifier = Modifier
                         .size(250.dp,70.dp)
+//                        .clip(shape = RoundedCornerShape(0.dp))
+                        .background(MaterialTheme.colorScheme.background)
                 ) {
                     Text(
                         text = symb,

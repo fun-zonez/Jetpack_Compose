@@ -76,7 +76,7 @@ fun ProjectCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.secondary)
+                    .background(MaterialTheme.colorScheme.primary)
 //                                Brush.linearGradient(
 //                        listOf<Color>(
 //                            Color(0xFF15159B),
@@ -100,7 +100,7 @@ fun ProjectCard(
                             .weight(3f)
                             .padding(top = 15.dp),
                         textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSecondary
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                     //                    Spacer(modifier = Modifier.width(10.dp))
                     IconButton (
@@ -110,13 +110,13 @@ fun ProjectCard(
                         onClick = {
                             holdV= holdV.not()
                         }) {
-                        Icon(imageVector = Icons.Default.MoreVert, tint =  MaterialTheme.colorScheme.onSecondary, contentDescription = "", modifier = Modifier.size(18.dp).offset( y = (-10).dp))
+                        Icon(imageVector = Icons.Default.MoreVert, tint =  MaterialTheme.colorScheme.onPrimary, contentDescription = "", modifier = Modifier.size(18.dp).offset( y = (-10).dp))
                         DropdownMenu(expanded = holdV, onDismissRequest = {holdV=!holdV}) {
                             DropdownMenuItem({ Text("Date: $date") },onClick = {})
                         }
                     }
                 }
-                Text(text = ProjTitle, color =  MaterialTheme.colorScheme.onSecondary, fontSize = 9.sp, fontFamily = FontFamily( Font(R.font.funnel_display_variable_font_wght)), textAlign = TextAlign.Center)
+                Text(text = ProjTitle, color =  MaterialTheme.colorScheme.onPrimary, fontSize = 9.sp, fontFamily = FontFamily( Font(R.font.funnel_display_variable_font_wght)), textAlign = TextAlign.Center)
             }
         }
     }

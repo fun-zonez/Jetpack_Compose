@@ -167,7 +167,8 @@ sealed class Routes(val route: String) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    ArcTheme(darkTheme = true) {
-        Home(navController = rememberNavController())
+    ArcTheme(darkTheme = false) {
+//        Home(navController = rememberNavController())
+        Calculator()
     }
 }

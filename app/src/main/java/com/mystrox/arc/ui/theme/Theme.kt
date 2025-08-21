@@ -14,29 +14,29 @@ import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
     primary = Color(0xFFF8CB69),
-    secondary = Color(0xFFF8CB69),
-    tertiary = Color(0xFF961515),
+//    secondary = Color(0xFFF8CB69),
+//    tertiary = Color(0xFF961515),
     background = Color(0xFFA4193D),
-    surface = Color(0xFF7A0000),
-    onPrimary = Color(0xFFF8CB69),
-    onSecondary = Color(0xFF7A0000),
+//    surface = Color(0xFF7A0000),
+    onPrimary = Color(0xFF7A0000),
+//    onSecondary = Color(0xFF7A0000),
     onTertiary = Color(0xFFFFEA00),
-    onBackground = Color(0xFFFFA000),
-    onSurface = Color(0xFFF57C00)
+//    onBackground = Color(0xFFFFA000),
+//    onSurface = Color(0xFFF57C00)
 )
 
 private val LightColorScheme = lightColorScheme(
 
-    primary = Color(0xFFC2185B),
-    secondary = Color(0xFF000000),
-    tertiary = Color(0xFF5E5059),
-    background = Color(0xFFB0504E),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color(0xFF0097A7),
-    onSecondary = Color(0xFFFFFFFF),
-    onTertiary = Color(0xFFFBC02D),
-    onBackground = Color(0xFF4300FF),
-    onSurface = Color(0xFF1976D2)
+    primary = Color(0xFFA4193D),
+//    secondary = Color(0xFFFFEA00),
+//    tertiary = Color(0xFF961515),
+    background = Color(0xFFF8CB69),
+//    surface = Color(0xFFFFFBFE),
+    onPrimary = Color(0xFFF8CB69),
+//    onSecondary = Color(0xFFFFFFFF),
+    onTertiary = Color(0xFF7A0000),
+////    onBackground = Color(0xFF4300FF),
+////    onSurface = Color(0xFF1976D2)
 
 )
 
