@@ -20,6 +20,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -75,13 +76,14 @@ fun ProjectCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Brush.linearGradient(
-                        listOf<Color>(
-                            Color(0xFF15159B),
-                            Color.Red
-                        )
-                    )
-                    )
+                    .background(MaterialTheme.colorScheme.secondary)
+//                                Brush.linearGradient(
+//                        listOf<Color>(
+//                            Color(0xFF15159B),
+//                            Color.Red
+//                        )
+//                    )
+//                    )
             ) {
 
 
@@ -97,7 +99,8 @@ fun ProjectCard(
                         modifier = Modifier
                             .weight(3f)
                             .padding(top = 15.dp),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSecondary
                     )
                     //                    Spacer(modifier = Modifier.width(10.dp))
                     IconButton (
@@ -107,13 +110,13 @@ fun ProjectCard(
                         onClick = {
                             holdV= holdV.not()
                         }) {
-                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = "", modifier = Modifier.size(18.dp).offset( y = (-10).dp))
+                        Icon(imageVector = Icons.Default.MoreVert, tint =  MaterialTheme.colorScheme.onSecondary, contentDescription = "", modifier = Modifier.size(18.dp).offset( y = (-10).dp))
                         DropdownMenu(expanded = holdV, onDismissRequest = {holdV=!holdV}) {
                             DropdownMenuItem({ Text("Date: $date") },onClick = {})
                         }
                     }
                 }
-                Text(text = ProjTitle, fontSize = 9.sp, fontFamily = FontFamily( Font(R.font.funnel_display_variable_font_wght)), textAlign = TextAlign.Center)
+                Text(text = ProjTitle, color =  MaterialTheme.colorScheme.onSecondary, fontSize = 9.sp, fontFamily = FontFamily( Font(R.font.funnel_display_variable_font_wght)), textAlign = TextAlign.Center)
             }
         }
     }

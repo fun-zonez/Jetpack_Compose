@@ -2,16 +2,19 @@ package com.mystrox.arc
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log.i
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -33,13 +36,14 @@ import com.mystrox.arc.ui.projects.StringAno
 import com.mystrox.arc.ui.projects.WebViewX
 import com.mystrox.arc.ui.theme.ArcTheme
 
+// TODO : USE projectList in items instead of item in LazyVerticalGrid
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ArcTheme {
+            ArcTheme() {
                 ArcApp()
             }
         }
@@ -73,7 +77,14 @@ fun ArcApp() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(navController: NavController) {
-//    var projectList = li
+    var mdC = MaterialTheme.colorScheme
+    var projectList = mapOf(
+        1 to "Attempt 1,17-08-2025",
+        2 to "String Ano,17-08-2025",
+        3 to "Calculator,19-08-2025",
+        4 to "WebViewX,20-08-2025"
+    )
+//    var projectListSplit = projectList.values.
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -81,21 +92,22 @@ fun Home(navController: NavController) {
                     Text(
                         text = "Arc",
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxSize()
-                            .padding(top = 15.dp),
+                        modifier = Modifier.fillMaxSize(),
+//                            .padding(top = 15.dp),
                         fontSize = MaterialTheme.typography.headlineLarge.fontSize,
-                        color = Color.White,
+                        color = mdC.onTertiary,
                         fontFamily = FontFamily(
                             Font(R.font.funnel_display_variable_font_wght, FontWeight.Bold)
                         )
                     )
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(0xFF3549AF),
-                    titleContentColor = Color.Black
+                    containerColor = mdC.background
+//                    titleContentColor = Color.Black
                 )
             )
         },
+
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Green)
@@ -104,15 +116,21 @@ fun Home(navController: NavController) {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPading)
-                    .background(Color(0xFF37458D))
+                    .background(mdC.background)
 //            .verticalScroll(state = rememberScrollState())
-                    .padding(top = 40.dp, start = 30.dp, end = 30.dp),
+                    .padding(
+//                        top = 40.dp,
+                        start = 30.dp, end = 30.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalArrangement = Arrangement.Center,
                 columns = GridCells.Fixed(3)
             ) {
+
+//                items(4){
+//                    ProjectCard(ProjNum = it,",navController = navController)
+//                }
                 item {
-                    ProjectCard(1, "Attempt 1","17-08-2025", navController = navController)
+                    ProjectCard(1, "Grids","17-08-2025", navController = navController)
                 }
                 item {
 
@@ -127,11 +145,10 @@ fun Home(navController: NavController) {
                 item {
                     ProjectCard(
                         4,
-                        "Project 5",
+                        "WebViewX",
                         "20-08-2025",
                         navController = navController
                     )
-
                 }
             }
         }
@@ -150,7 +167,7 @@ sealed class Routes(val route: String) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    ArcTheme {
+    ArcTheme(darkTheme = true) {
         Home(navController = rememberNavController())
     }
 }
