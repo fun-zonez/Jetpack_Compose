@@ -15,9 +15,9 @@ import androidx.compose.ui.platform.LocalContext
 private val DarkColorScheme = darkColorScheme(
     primary = Color(0xFFF8CB69),
 //    secondary = Color(0xFFF8CB69),
-//    tertiary = Color(0xFF961515),
+//    tertiary = Color(0xFFF8CB69),
     background = Color(0xFFA4193D),
-//    surface = Color(0xFF7A0000),
+    surface = Color(0xFFF8CB69),
     onPrimary = Color(0xFF7A0000),
 //    onSecondary = Color(0xFF7A0000),
     onTertiary = Color(0xFFFFEA00),
@@ -29,9 +29,9 @@ private val LightColorScheme = lightColorScheme(
 
     primary = Color(0xFFA4193D),
 //    secondary = Color(0xFFFFEA00),
-//    tertiary = Color(0xFF961515),
+//    tertiary = Color(0xFFF8CB69),
     background = Color(0xFFF8CB69),
-//    surface = Color(0xFFFFFBFE),
+    surface = Color(0xFFA4193D),
     onPrimary = Color(0xFFF8CB69),
 //    onSecondary = Color(0xFFFFFFFF),
     onTertiary = Color(0xFF7A0000),

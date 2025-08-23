@@ -86,7 +86,6 @@ fun ProjectCard(
 //                    )
             ) {
 
-
                 Row(horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.Top,
                     modifier = Modifier

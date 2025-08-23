@@ -2,19 +2,16 @@ package com.mystrox.arc
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log.i
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,12 +23,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.mystrox.arc.ui.ProjectCard
 import com.mystrox.arc.ui.projects.Attempt1
 import com.mystrox.arc.ui.projects.Calculator
+import com.mystrox.arc.ui.projects.CodeSnippet
+import com.mystrox.arc.ui.projects.SnippetScreen
 import com.mystrox.arc.ui.projects.StringAno
 import com.mystrox.arc.ui.projects.WebViewX
 import com.mystrox.arc.ui.theme.ArcTheme
@@ -71,6 +72,17 @@ fun ArcApp() {
         composable(Routes.Project4.route) {
             WebViewX()
         }
+        composable(Routes.Project5.route) {
+            CodeSnippet(navController)
+        }
+        composable(
+            route ="SnippetScreen/{mine}",
+            arguments = listOf(navArgument("mine") { type = NavType.StringType })
+        )
+        {
+            val mine = it.arguments?.getString("mine")
+            SnippetScreen(mine?.split(","))
+        }
     }
 }
 
@@ -82,7 +94,8 @@ fun Home(navController: NavController) {
         1 to "Attempt 1,17-08-2025",
         2 to "String Ano,17-08-2025",
         3 to "Calculator,19-08-2025",
-        4 to "WebViewX,20-08-2025"
+        4 to "WebViewX,20-08-2025",
+        5 to "Code Snippet,23-08-2025"
     )
 //    var projectListSplit = projectList.values.
     Scaffold(
@@ -123,7 +136,7 @@ fun Home(navController: NavController) {
                         start = 30.dp, end = 30.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalArrangement = Arrangement.Center,
-                columns = GridCells.Fixed(3)
+                columns = GridCells.Adaptive(100.dp)
             ) {
 
 //                items(4){
@@ -150,6 +163,14 @@ fun Home(navController: NavController) {
                         navController = navController
                     )
                 }
+                item {
+                    ProjectCard(
+                        5,
+                        "Code Snippet",
+                        "23-08-2025",
+                        navController = navController
+                    )
+                }
             }
         }
 }
@@ -161,6 +182,7 @@ sealed class Routes(val route: String) {
     data object Project2 : Routes("project2")
     data object Project3 : Routes("project3")
     data object Project4 : Routes("project4")
+    data object Project5 : Routes("project5")
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -168,7 +190,7 @@ sealed class Routes(val route: String) {
 @Composable
 fun GreetingPreview() {
     ArcTheme(darkTheme = false) {
-//        Home(navController = rememberNavController())
-        Calculator()
+        Home(navController = rememberNavController())
+//        Calculator()
     }
 }
