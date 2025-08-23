@@ -33,6 +33,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,6 +58,7 @@ import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
 
+
 // TODO: Add titles to Cards and inside card -> code snippets with Copy Button with Direct Copy to Clipboard option and save snippets on files(i.e csv,txt)
 
 
@@ -66,12 +68,18 @@ import java.io.FileWriter
 @Composable
 fun CodeSnippet(navController: NavController){
     var showDialog by remember { mutableStateOf(false) }
-    var snippetCode: MutableList<Array<String>> = remember { mutableListOf() }
+    var snippetCode by remember { mutableStateOf<List<Array<String>>>(emptyList()) }
     val coroutineScope = rememberCoroutineScope()
     var snippedLoaded by remember { mutableStateOf(false) }
     val file = File(LocalContext.current.filesDir,"snippet.csv")
     if(!file.exists()){
         file.createNewFile()
+    }
+    LaunchedEffect(Unit) {
+        coroutineScope.launch {
+            snippetCode = readSnippet(file)
+            snippedLoaded = true
+        }
     }
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -92,18 +100,14 @@ fun CodeSnippet(navController: NavController){
                 )
             }
         }
-    ) {paddingValues ->
+    ) { paddingValues ->
         LazyColumn(
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier
+                .padding(paddingValues)
                 .padding(10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            coroutineScope.launch {
-                snippetCode = readSnippet(file)
-                snippedLoaded = true
-            }
             if(snippedLoaded){
-
                 items(items = snippetCode){
                     Card(
                         modifier = Modifier.fillMaxWidth()
@@ -121,18 +125,16 @@ fun CodeSnippet(navController: NavController){
                                 modifier = Modifier.padding(10.dp)
                             ) {
                                 Text(
-                                    it[0].toString(),
+                                    it[0],
                                     textAlign = TextAlign.Center,
                                     color = colorScheme.background,
                                     fontSize = MaterialTheme.typography.headlineSmall.fontSize
                                 )
                             }
 //                        }
-
                     }
                 }
             }
-
         }
 
         if (showDialog){
@@ -243,7 +245,6 @@ fun SnippetTextField(text: String, onTextChange: (String) -> Unit, modifier: Mod
             unfocusedContainerColor = colorScheme.background
         )
         ,modifier = modifier
-
     )
 
 }
@@ -252,15 +253,19 @@ fun SnippetTextField(text: String, onTextChange: (String) -> Unit, modifier: Mod
 fun SnippetScreen(it: List<String>?){
     ArcTheme {
         Column(
-            Modifier.fillMaxSize(),
+            Modifier.fillMaxSize()
+                .background(colorScheme.background)
+                .padding(40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top
         ) {
-            it?.first()?.let { text -> Text(text,fontSize = 20.sp) }
-            it?.last()?.let { text -> Text(text, fontSize = 20.sp) }
+            Text(it?.get(0)?.uppercase() ?: "",fontSize = 50.sp, color = colorScheme.onBackground)
+            Spacer(modifier = Modifier.height(30.dp))
+            Text(it?.get(1) ?: "", fontSize = 20.sp, color = colorScheme.onBackground)
         }
     }
 }
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable

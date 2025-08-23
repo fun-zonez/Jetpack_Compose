@@ -51,7 +51,7 @@ dependencies {
     implementation("androidx.compose.foundation:foundation-layout:1.9.0")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3:1.3.2")
-    testImplementation("junit:junit")
+    testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit")
     androidTestImplementation("androidx.test.espresso:espresso-core")
     androidTestImplementation(platform("androidx.compose:compose-bom:2025.08.00"))
@@ -60,4 +60,5 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("net.objecthunter:exp4j:0.4.8")
     implementation("com.opencsv:opencsv:5.12.0")
+    implementation("androidx.compose.material:material-icons-extended:1.7.5")
 }

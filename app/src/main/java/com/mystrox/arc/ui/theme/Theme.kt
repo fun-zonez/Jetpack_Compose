@@ -1,5 +1,6 @@
 package com.mystrox.arc.ui.theme
 
+import android.R.attr.enabled
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -11,6 +12,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.state.ToggleableState
 
 private val DarkColorScheme = darkColorScheme(
     primary = Color(0xFFF8CB69),
@@ -23,6 +25,8 @@ private val DarkColorScheme = darkColorScheme(
     onTertiary = Color(0xFFFFEA00),
 //    onBackground = Color(0xFFFFA000),
 //    onSurface = Color(0xFFF57C00)
+
+
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -63,3 +67,19 @@ fun ArcTheme(
         content = content
     )
 }
+
+val LightMyColors = lightColorScheme(
+    background = Color(0xFFE2E2E2),
+    primary = Color(0xFF000000),
+    secondary = Color(0xFFEE3C4A),
+    onBackground = Color(0xFFFFFFFF),
+    onSurface = Color(0xFFFFFFFF)
+)
+
+val DarkMyColors = darkColorScheme(
+    background = Color(0xFF333333),
+    primary = Color(0xFFFFFFFF),
+    secondary = Color(0xFFEE3C4A),
+    onBackground = Color(0xFF5C5C5C),
+    onSurface = Color(0xFFFFFFFF)
+)
