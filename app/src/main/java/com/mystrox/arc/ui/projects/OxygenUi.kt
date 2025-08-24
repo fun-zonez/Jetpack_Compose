@@ -1,10 +1,10 @@
 package com.mystrox.arc.ui.projects
 
-import android.R.attr.top
-import android.R.attr.x
-import android.util.Log.e
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,21 +23,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -50,7 +52,18 @@ import com.mystrox.arc.R
 
 
 @Composable
-fun OxygenUi(){
+fun OxygenUi() {
+    val darktheme = isSystemInDarkTheme()
+    var isdarktheme by remember { mutableStateOf(darktheme) }
+    MaterialTheme(
+        colorScheme = if(isdarktheme) DarkMyColors else LightMyColors,
+        typography = MaterialTheme.typography
+
+    ) {
+        val uiStates = remember {
+            mutableStateListOf(true, false, false, true, false, true, false,true)
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -62,25 +75,36 @@ fun OxygenUi(){
                 modifier = Modifier
                     .fillMaxWidth()
 //                    .padding(bottom = 10.dp)
-            ){
+            ) {
                 Row(
                     modifier = Modifier
 //                        .width(50.dp)
-                        .offset(y = 40.dp,x = 25.dp)
+                        .offset(y = 40.dp, x = 25.dp)
                 ) {
-                    Text("09:00 Mon, 26 Aug", fontSize = 18.sp, textAlign = TextAlign.Start, color = colorScheme.primary)
+                    Text(
+                        "09:00 Mon, 26 Aug",
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Start,
+                        color = colorScheme.primary
+                    )
                     Box(
                         modifier = Modifier.fillMaxWidth(),
                         contentAlignment = Alignment.TopEnd
 //                        horizontalArrangement = Arrangement.End
                     ) {
-                        Icon(painter = painterResource(R.drawable.circle), contentDescription = "", tint = colorScheme.primary ,
+                        Icon(
+                            painter = painterResource(R.drawable.circle),
+                            contentDescription = "",
+                            tint = colorScheme.primary,
                             modifier = Modifier
                                 .size(10.dp)
                                 .offset(x = (-41.2).dp, y = 9.8.dp)
                                 .rotate(30f)
                         )
-                        Icon(painter = painterResource(R.drawable.hexagon), contentDescription = "", tint = colorScheme.primary ,
+                        Icon(
+                            painter = painterResource(R.drawable.hexagon),
+                            contentDescription = "",
+                            tint = colorScheme.primary,
                             modifier = Modifier
                                 .size(23.dp)
                                 .offset(x = (-35).dp, y = 3.dp)
@@ -173,7 +197,7 @@ fun OxygenUi(){
                         .size(145.dp)
                         .offset(x = 18.dp)
                         .background(colorScheme.onBackground, shape = RoundedCornerShape(10.dp))
-                ){
+                ) {
                     Column {
                         Row(
                             modifier = Modifier
@@ -203,8 +227,8 @@ fun OxygenUi(){
                                 .padding(start = 20.dp),
                             horizontalAlignment = Alignment.Start
                         ) {
-                            Text("blue",color = colorScheme.primary)
-                            Text("yung kai",color = colorScheme.primary.copy(0.5f))
+                            Text("blue", color = colorScheme.primary)
+                            Text("yung kai", color = colorScheme.primary.copy(0.5f))
                         }
                         Spacer(modifier = Modifier.height(10.dp))
                         Row(
@@ -220,7 +244,18 @@ fun OxygenUi(){
                                 tint = colorScheme.primary
                             )
 
-                            Icon(painter = painterResource(R.drawable.pause), contentDescription = "", tint = colorScheme.primary,modifier = Modifier.size(23.dp))
+                            Icon(
+                                painter = painterResource(if (uiStates[7]) R.drawable.pause else R.drawable.play),
+                                contentDescription = "",
+                                tint = colorScheme.primary,
+                                modifier = Modifier.size(23.dp)
+                                    .clickable(
+                                        true,
+                                        onClick = {
+                                            uiStates[7] = !uiStates[7]
+                                        }
+                                    )
+                            )
 
                             Icon(
                                 painter = painterResource(R.drawable.next),
@@ -237,53 +272,87 @@ fun OxygenUi(){
                         .height(145.dp)
                         .width(65.dp)
                         .offset(x = 11.dp)
-                        .background(colorScheme.onBackground.copy(alpha = 0.3f), shape = RoundedCornerShape(10.dp)),
+                        .background(
+                            colorScheme.onBackground.copy(alpha = 0.3f),
+                            shape = RoundedCornerShape(10.dp)
+                        ),
                     contentAlignment = Alignment.BottomEnd
-                ){
-
+                ) {
+                    val brightnessPointer = remember { mutableStateOf(0f) }
                     Box(
                         modifier = Modifier
-                            .height(30.dp)
+                            .height(brightnessPointer.value.dp)
                             .width(90.dp)
 //                            .offset(x = 11.dp)
                             .clip(
                                 shape = RoundedCornerShape(
                                     bottomStart = 10.dp,
-                                    bottomEnd = 10.dp
+                                    bottomEnd = 10.dp,
+                                    topStart = if(brightnessPointer.value >= 140f) 10.dp else 0.dp,
+                                    topEnd =  if(brightnessPointer.value >= 140f) 10.dp else 0.dp
                                 )
                             )
                             .background(Color.White)
+                            .pointerInput(Unit){
+                                detectDragGestures { change, dragAmount ->
+                                    change.consume()
+                                    brightnessPointer.value = (brightnessPointer.value - dragAmount.y).coerceIn(0f,150f)
+                                    println(brightnessPointer.value)
+                                }
+                            }
 
                     )
-                    Icon(painter = painterResource(R.drawable.brightness), modifier = Modifier
-                        .offset(x = (-22).dp, y = (-18).dp)
-                        .size(22.dp), contentDescription = "",tint = Color.Black.copy(alpha = 0.8f))
+                    Icon(
+                        painter = painterResource(R.drawable.brightness),
+                        modifier = Modifier
+                            .offset(x = (-22).dp, y = (-18).dp)
+                            .size(22.dp),
+                        contentDescription = "",
+                        tint = Color.Black.copy(alpha = 0.8f)
+                    )
                 }
                 Box(
                     modifier = Modifier
                         .height(145.dp)
                         .width(65.dp)
                         .offset(x = 11.dp)
-                        .background(colorScheme.onBackground.copy(alpha = 0.3f), shape = RoundedCornerShape(10.dp)),
+                        .background(
+                            colorScheme.onBackground.copy(alpha = 0.3f),
+                            shape = RoundedCornerShape(10.dp)
+                        ),
                     contentAlignment = Alignment.BottomEnd
-                ){
+                ) {
+                    val volumePointer = remember { mutableStateOf(0f) }
                     Box(
                         modifier = Modifier
-                            .height(50.dp)
+                            .height(volumePointer.value.dp)
                             .width(90.dp)
 //                            .offset(x = 11.dp)
                             .clip(
                                 shape = RoundedCornerShape(
                                     bottomStart = 10.dp,
-                                    bottomEnd = 10.dp
+                                    bottomEnd = 10.dp,
+                                    topStart = if(volumePointer.value >= 140f) 10.dp else 0.dp,
+                                    topEnd =  if(volumePointer.value >= 140f) 10.dp else 0.dp
                                 )
                             )
                             .background(Color.White)
-
+                            .pointerInput(Unit) {
+                                detectDragGestures { change, dragAmount ->
+                                    change.consume()
+                                    volumePointer.value = (volumePointer.value - dragAmount.y).coerceIn(0f,150f)
+                                    println(volumePointer.value)
+                                }
+                            }
                     )
-                    Icon(painter = painterResource(R.drawable.speakeri), modifier = Modifier
-                        .offset(x = (-18).dp, y = (-18).dp)
-                        .size(28.dp), contentDescription = "",tint = Color.Black.copy(alpha = 0.8f))
+                    Icon(
+                        painter = painterResource(R.drawable.speakeri),
+                        modifier = Modifier
+                            .offset(x = (-18).dp, y = (-18).dp)
+                            .size(28.dp),
+                        contentDescription = "",
+                        tint = Color.Black.copy(alpha = 0.8f)
+                    )
 
                 }
             }
@@ -299,14 +368,34 @@ fun OxygenUi(){
                         .height(65.dp)
                         .width(145.dp)
                         .offset(x = 11.dp)
-                        .background(colorScheme.secondary, shape = RoundedCornerShape(10.dp)),
+                        .clickable(
+                            true,
+                            onClick = {
+                                uiStates[0] = !uiStates[0]
+                                isdarktheme = !isdarktheme
+
+                            }
+                        )
+                        .background(
+                            if (uiStates[0]) colorScheme.secondary else colorScheme.onBackground,
+                            shape = RoundedCornerShape(10.dp)
+                        ),
                     contentAlignment = Alignment.CenterStart
-                ){
+                ) {
                     Row {
-                        Icon(painter = painterResource(R.drawable.darkmode), contentDescription = "", tint = colorScheme.onSurface, modifier = Modifier
-                            .padding(start = 15.dp)
-                            .rotate(40f))
-                        Text("   Dark mode", color = colorScheme.onSurface, fontSize = 13.sp)
+                        Icon(
+                            painter = painterResource(R.drawable.darkmode),
+                            contentDescription = "",
+                            tint = if (uiStates[0]) colorScheme.onSurface else colorScheme.primary,
+                            modifier = Modifier
+                                .padding(start = 15.dp)
+                                .rotate(40f)
+                        )
+                        Text(
+                            "   Dark mode",
+                            color = if (uiStates[0]) colorScheme.onSurface else colorScheme.primary,
+                            fontSize = 13.sp
+                        )
                     }
                 }
 
@@ -315,72 +404,165 @@ fun OxygenUi(){
                         .height(65.dp)
                         .width(150.dp)
                         .offset(x = 11.dp)
-                        .background(colorScheme.onBackground, shape = RoundedCornerShape(10.dp)),
+                        .clickable(
+                            true,
+                            onClick = {
+                                uiStates[1] = !uiStates[1]
+                            }
+                        )
+                        .background(
+                            if (uiStates[1]) colorScheme.secondary else colorScheme.onBackground,
+                            shape = RoundedCornerShape(10.dp)
+                        ),
                     contentAlignment = Alignment.CenterStart
-                ){
+                ) {
                     Row {
-                        Icon(painter = painterResource(R.drawable.wifi), contentDescription = "", tint = colorScheme.primary, modifier = Modifier.padding(start = 15.dp))
-                        Text("   Wi-Fi", color = colorScheme.primary, fontSize = 12.sp)
-                        Icon(Icons.Default.KeyboardArrowUp, contentDescription = "", tint = colorScheme.primary,modifier = Modifier
-                            .padding(start = 45.dp)
-                            .rotate(90f)
-                            .background(Color.White.copy(alpha = 0.2f), shape = CircleShape))
+                        Icon(
+                            painter = painterResource(R.drawable.wifi),
+                            contentDescription = "",
+                            tint = if (uiStates[1]) colorScheme.onSurface else colorScheme.primary,
+                            modifier = Modifier.padding(start = 15.dp)
+                        )
+                        Text(
+                            "   Wi-Fi",
+                            color = if (uiStates[1]) colorScheme.onSurface else colorScheme.primary,
+                            fontSize = 12.sp
+                        )
+                        Icon(
+                            Icons.Default.KeyboardArrowUp,
+                            contentDescription = "",
+                            tint = if (uiStates[1]) colorScheme.onSurface else colorScheme.primary,
+                            modifier = Modifier
+                                .padding(start = 45.dp)
+                                .rotate(90f)
+                                .background(Color.White.copy(alpha = 0.2f), shape = CircleShape)
+                        )
                     }
                 }
             }
             Spacer(modifier = Modifier.height(15.dp))
             Row(
-                modifier = Modifier.padding(start=20.dp),
+                modifier = Modifier.padding(start = 20.dp),
 //                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Box(
                     modifier = Modifier
                         .size(50.dp)
                         .offset(x = 12.dp)
-                        .background(colorScheme.secondary, shape = RoundedCornerShape(10.dp)),
+                        .clickable(
+                            true,
+                            onClick = {
+                                uiStates[2] = !uiStates[2]
+                            }
+                        )
+                        .background(
+                            if (uiStates[2]) colorScheme.secondary else colorScheme.onBackground,
+                            shape = RoundedCornerShape(10.dp)
+                        ),
                     contentAlignment = Alignment.Center
-                ){
-                    Icon(painter = painterResource(R.drawable.bluetooth), contentDescription = "", tint = colorScheme.onSurface, modifier = Modifier.size(24.dp))
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.bluetooth),
+                        contentDescription = "",
+                        tint = if (uiStates[2]) colorScheme.onSurface else colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
 
                 Box(
                     modifier = Modifier
                         .size(50.dp)
                         .offset(x = 25.dp)
-                        .background(colorScheme.onBackground, shape = RoundedCornerShape(10.dp)),
+                        .clickable(
+                            true,
+                            onClick = {
+                                uiStates[3] = !uiStates[3]
+                            }
+                        )
+                        .background(
+                            if (uiStates[3]) colorScheme.secondary else colorScheme.onBackground,
+                            shape = RoundedCornerShape(10.dp)
+                        ),
                     contentAlignment = Alignment.Center
-                ){
-                    Icon(painter = painterResource(R.drawable.auto_rotate), contentDescription = "", tint = colorScheme.primary, modifier = Modifier.size(24.dp))
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.auto_rotate),
+                        contentDescription = "",
+                        tint = if (uiStates[3]) colorScheme.onSurface else colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
 
                 Box(
                     modifier = Modifier
                         .size(50.dp)
                         .offset(x = 38.dp)
-                        .background(colorScheme.secondary, shape = RoundedCornerShape(10.dp)),
+                        .clickable(
+                            true,
+                            onClick = {
+                                uiStates[4] = !uiStates[4]
+                            }
+                        )
+                        .background(
+                            if (uiStates[4]) colorScheme.secondary else colorScheme.onBackground,
+                            shape = RoundedCornerShape(10.dp)
+                        ),
                     contentAlignment = Alignment.Center
-                ){
-                    Icon(painter = painterResource(R.drawable.location), contentDescription = "", tint = colorScheme.onSurface, modifier = Modifier.size(24.dp))
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.location),
+                        contentDescription = "",
+                        tint = if (uiStates[4]) colorScheme.onSurface else colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
 
                 Box(
                     modifier = Modifier
                         .size(50.dp)
                         .offset(x = 52.dp)
-                        .background(colorScheme.secondary, shape = RoundedCornerShape(10.dp)),
+                        .clickable(
+                            true,
+                            onClick = {
+                                uiStates[5] = !uiStates[5]
+                            }
+                        )
+                        .background(
+                            if (uiStates[5]) colorScheme.secondary else colorScheme.onBackground,
+                            shape = RoundedCornerShape(10.dp)
+                        ),
                     contentAlignment = Alignment.Center
-                ){
-                    Icon(painter = painterResource(R.drawable.dnd), contentDescription = "", tint = colorScheme.onSurface, modifier = Modifier.size(24.dp))
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.dnd),
+                        contentDescription = "",
+                        tint = if (uiStates[5]) colorScheme.onSurface else colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
 
                 Box(
                     modifier = Modifier
                         .size(50.dp)
                         .offset(x = 65.dp)
-                        .background(colorScheme.onBackground, shape = RoundedCornerShape(10.dp)),
+                        .clickable(
+                            true,
+                            onClick = {
+                                uiStates[6] = !uiStates[6]
+                            }
+                        )
+                        .background(
+                            if (uiStates[6]) colorScheme.secondary else colorScheme.onBackground,
+                            shape = RoundedCornerShape(10.dp)
+                        ),
                     contentAlignment = Alignment.Center
-                ){
-                    Icon(painter = painterResource(R.drawable.neural), contentDescription = "", tint = colorScheme.primary, modifier = Modifier.size(24.dp))
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.neural),
+                        contentDescription = "",
+                        tint = if (uiStates[6]) colorScheme.onSurface else colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
@@ -391,7 +573,7 @@ fun OxygenUi(){
                     .offset(x = 158.dp)
                     .background(colorScheme.onBackground, shape = RoundedCornerShape(10.dp)),
                 contentAlignment = Alignment.Center
-            ){}
+            ) {}
             Spacer(modifier = Modifier.height(20.dp))
             Box(
                 modifier = Modifier
@@ -404,7 +586,7 @@ fun OxygenUi(){
                         shape = RoundedCornerShape(15.dp)
                     ),
 //                contentAlignment = Alignment.Center
-            ){
+            ) {
                 Column {
                     Row(
                         horizontalArrangement = Arrangement.Start
@@ -516,6 +698,7 @@ fun OxygenUi(){
             }
 
         }
+    }
 }
 
 @Preview(showBackground = true)

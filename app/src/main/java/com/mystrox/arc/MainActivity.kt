@@ -15,9 +15,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key.Companion.Home
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -89,13 +91,9 @@ fun ArcApp() {
             SnippetScreen(mine?.split(","))
         }
         composable(Routes.Project6.route) {
-            MaterialTheme(
-                colorScheme = if(isSystemInDarkTheme()) DarkMyColors else LightMyColors,
-                typography = MaterialTheme.typography
 
-            ) {
-                OxygenUi()
-            }
+            OxygenUi()
+
         }
     }
 }
