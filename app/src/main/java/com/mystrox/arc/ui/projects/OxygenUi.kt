@@ -1,5 +1,11 @@
 package com.mystrox.arc.ui.projects
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import android.os.Build
+import androidx.activity.SystemBarStyle
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +23,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.systemBarsIgnoringVisibility
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -26,8 +34,10 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.ScaffoldDefaults.contentWindowInsets
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -40,19 +50,56 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.mystrox.arc.ui.theme.DarkMyColors
 import com.mystrox.arc.ui.theme.LightMyColors
 import com.mystrox.arc.R
+import java.time.LocalDate
+import java.time.LocalTime
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun OxygenUi() {
+
+    fun Context.findActivity(): Activity? {
+        var context = this
+        while (context is ContextWrapper) {
+            if (context is Activity) return context
+            context = context.baseContext
+        }
+        return null
+    }
+    val context = LocalContext.current
+    val activity = context.findActivity() ?: return
+    val window = activity.window
+    val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+
+    DisposableEffect(Unit) {
+        insetsController.apply {
+            hide(WindowInsetsCompat.Type.statusBars())
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_BARS_BY_TOUCH
+        }
+
+        onDispose {
+            insetsController.apply {
+                show(WindowInsetsCompat.Type.statusBars())
+                systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+            }
+        }
+    }
+
+
+
     val darktheme = isSystemInDarkTheme()
     var isdarktheme by remember { mutableStateOf(darktheme) }
     MaterialTheme(
@@ -81,8 +128,9 @@ fun OxygenUi() {
 //                        .width(50.dp)
                         .offset(y = 40.dp, x = 25.dp)
                 ) {
+                    val time = LocalTime.now().hour.toString() + ":" + LocalTime.now().minute.toString() + " " + LocalDate.now().dayOfWeek.toString().substring(0,3).lowercase().replaceFirstChar { it.uppercase() } + ", " + LocalDate.now().dayOfMonth + " " + LocalDate.now().month.toString().substring(0,3).lowercase().replaceFirstChar { it.uppercase() }
                     Text(
-                        "09:00 Mon, 26 Aug",
+                        time,
                         fontSize = 18.sp,
                         textAlign = TextAlign.Start,
                         color = colorScheme.primary
@@ -176,15 +224,7 @@ fun OxygenUi() {
                         )
                     }
 
-                    Icon(
-                        painter = painterResource(R.drawable.bold),
-                        contentDescription = "bold",
-                        modifier = Modifier
-                            .size(19.dp)
-                            .padding(top = 7.dp),
-                        tint = colorScheme.primary
-                    )
-                    Text("30%", color = colorScheme.primary, fontSize = 13.sp)
+                    Text(" 30%", color = colorScheme.primary, fontSize = 13.sp)
                 }
             }
             Spacer(Modifier.height(60.dp))
