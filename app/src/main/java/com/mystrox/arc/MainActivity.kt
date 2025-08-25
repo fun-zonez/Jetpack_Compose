@@ -13,11 +13,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
@@ -33,16 +35,20 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.mystrox.arc.ui.ProjectCard
+import com.mystrox.arc.ui.projects.AnimationCard
+import com.mystrox.arc.ui.projects.AnimationScreen
 import com.mystrox.arc.ui.projects.Attempt1
 import com.mystrox.arc.ui.projects.Calculator
 import com.mystrox.arc.ui.projects.CodeSnippet
 import com.mystrox.arc.ui.projects.OxygenUi
 import com.mystrox.arc.ui.projects.SnippetScreen
+import com.mystrox.arc.ui.projects.SpotifyHome
+import com.mystrox.arc.ui.projects.SpotifySplash
 import com.mystrox.arc.ui.projects.StringAno
 import com.mystrox.arc.ui.projects.WebViewX
 import com.mystrox.arc.ui.theme.ArcTheme
-import com.mystrox.arc.ui.theme.DarkMyColors
-import com.mystrox.arc.ui.theme.LightMyColors
+import com.mystrox.arc.ui.theme.SpotifyDark
+import com.mystrox.arc.ui.theme.SpotifyLight
 
 // TODO : USE projectList in items instead of item in LazyVerticalGrid
 class MainActivity : ComponentActivity() {
@@ -83,7 +89,7 @@ fun ArcApp() {
             CodeSnippet(navController)
         }
         composable(
-            route ="SnippetScreen/{mine}",
+            route = "SnippetScreen/{mine}",
             arguments = listOf(navArgument("mine") { type = NavType.StringType })
         )
         {
@@ -91,9 +97,34 @@ fun ArcApp() {
             SnippetScreen(mine?.split(","))
         }
         composable(Routes.Project6.route) {
-
             OxygenUi()
+        }
+        composable(Routes.Project7.route) {
+            MaterialTheme(
+                colorScheme = if (isSystemInDarkTheme()) SpotifyDark else SpotifyLight,
+            ) {
+                SpotifySplash(navController)
+            }
 
+        }
+        composable("SpotifyHome") {
+            MaterialTheme(
+                colorScheme = if (isSystemInDarkTheme()) SpotifyDark else SpotifyLight,
+            ) {
+                SpotifyHome(navController)
+            }
+        }
+        composable(Routes.Project8.route) {
+            AnimationScreen(navController)
+        }
+        composable(
+            "AnimationCard/{id}",
+            arguments = listOf(navArgument("id") { type = NavType.IntType })
+        ) {
+            val id = it.arguments?.getInt("id")
+            ArcTheme {
+                AnimationCard(id)
+            }
         }
     }
 }
@@ -137,62 +168,79 @@ fun Home(navController: NavController) {
             .fillMaxSize()
             .background(Color.Green)
     ) { innerPading ->
-            LazyVerticalGrid(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPading)
-                    .background(mdC.background)
+        LazyVerticalGrid(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPading)
+                .background(mdC.background)
 //            .verticalScroll(state = rememberScrollState())
-                    .padding(
+                .padding(
 //                        top = 40.dp,
-                        start = 30.dp, end = 30.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalArrangement = Arrangement.Center,
-                columns = GridCells.Adaptive(100.dp)
-            ) {
+                    start = 30.dp, end = 30.dp
+                ),
+            verticalArrangement = Arrangement.Top,
+            horizontalArrangement = Arrangement.Center,
+            columns = GridCells.Adaptive(100.dp)
+        ) {
 
 //                items(4){
 //                    ProjectCard(ProjNum = it,",navController = navController)
 //                }
-                item {
-                    ProjectCard(1, "Grids","17-08-2025", navController = navController)
-                }
-                item {
+            item {
+                ProjectCard(1, "Grids", "17-08-2025", navController = navController)
+            }
+            item {
 
-                    ProjectCard(2, "String Ano","17-08-2025", navController = navController)
+                ProjectCard(2, "String Ano", "17-08-2025", navController = navController)
 
-                }
-                item {
+            }
+            item {
 
-                    ProjectCard(3, "Calculator","19-08-2025", navController = navController)
+                ProjectCard(3, "Calculator", "19-08-2025", navController = navController)
 
-                }
-                item {
-                    ProjectCard(
-                        4,
-                        "WebViewX",
-                        "20-08-2025",
-                        navController = navController
-                    )
-                }
-                item {
-                    ProjectCard(
-                        5,
-                        "Code Snippet",
-                        "23-08-2025",
-                        navController = navController
-                    )
-                }
-                item{
-                    ProjectCard(
-                        6,
-                        "System UI",
-                        "23-08-2025",
-                        navController = navController
-                    )
-                }
+            }
+            item {
+                ProjectCard(
+                    4,
+                    "WebViewX",
+                    "20-08-2025",
+                    navController = navController
+                )
+            }
+            item {
+                ProjectCard(
+                    5,
+                    "Code Snippet",
+                    "23-08-2025",
+                    navController = navController
+                )
+            }
+            item {
+                ProjectCard(
+                    6,
+                    "System UI",
+                    "23-08-2025",
+                    navController = navController
+                )
+            }
+            item {
+                ProjectCard(
+                    7,
+                    "Spotify",
+                    "24-08-2025",
+                    navController = navController
+                )
+            }
+            item {
+                ProjectCard(
+                    8,
+                    "Animations",
+                    "25-08-2025",
+                    navController = navController
+                )
             }
         }
+    }
 }
 
 
@@ -204,6 +252,8 @@ sealed class Routes(val route: String) {
     data object Project4 : Routes("project4")
     data object Project5 : Routes("project5")
     data object Project6 : Routes("project6")
+    data object Project7 : Routes("project7")
+    data object Project8 : Routes("project8")
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)

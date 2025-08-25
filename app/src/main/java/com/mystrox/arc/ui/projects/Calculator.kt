@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
@@ -26,9 +27,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mystrox.arc.R
+import com.mystrox.arc.ui.theme.ArcTheme
 import net.objecthunter.exp4j.ExpressionBuilder
 
 @Composable
@@ -103,7 +106,7 @@ fun Calculator(){
 //            contentPadding = PaddingValues(20.dp),
         ) {
             itemsIndexed(symbols){ index, symb ->
-                ElevatedButton(
+                Button(
                     onClick = {
                         if (index == 0){
                             text = ""
@@ -122,11 +125,15 @@ fun Calculator(){
 //                        scrollState.animateScrollTo(scrollState.maxValue)
 
                     },
-                    shape = ButtonDefaults.elevatedShape,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.background
+                    ),
+                    shape = ButtonDefaults.outlinedShape,
                     modifier = Modifier
                         .size(250.dp,70.dp)
-//                        .clip(shape = RoundedCornerShape(0.dp))
-                        .background(MaterialTheme.colorScheme.background)
+//                        .clip(shape = RectangleShape)
+//                        .background(MaterialTheme.colorScheme.background)
                 ) {
                     Text(
                         text = symb,
@@ -144,7 +151,7 @@ fun Calculator(){
 
 fun expEv(expression :String): Any {
     try {
-        var expressionBuilder = ExpressionBuilder(expression).build()
+        val expressionBuilder = ExpressionBuilder(expression).build()
         return expressionBuilder.evaluate()
     }
     catch (e: Exception){
@@ -154,3 +161,10 @@ fun expEv(expression :String): Any {
 }
 
 
+@Preview
+@Composable
+fun CalcPreview(){
+    ArcTheme {
+        Calculator()
+    }
+}

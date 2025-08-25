@@ -87,7 +87,7 @@ fun OxygenUi() {
     DisposableEffect(Unit) {
         insetsController.apply {
             hide(WindowInsetsCompat.Type.statusBars())
-            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_BARS_BY_TOUCH
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
         }
 
         onDispose {

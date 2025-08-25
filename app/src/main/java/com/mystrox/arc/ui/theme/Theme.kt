@@ -83,3 +83,19 @@ val DarkMyColors = darkColorScheme(
     onBackground = Color(0xFF5C5C5C),
     onSurface = Color(0xFFFFFFFF)
 )
+
+val SpotifyDark = darkColorScheme(
+    background = Color(0xFF000000),
+    primary = Color(0xFF00D75E),
+    secondary = Color(0xFFEE3C4A),
+    onBackground = Color(0xFF5C5C5C),
+    onSurface = Color(0xFFFFFFFF)
+)
+
+val SpotifyLight = lightColorScheme(
+    background = Color(0xFFFFFFFF),
+    primary = Color(0xFF00D75E),
+    secondary = Color(0xFFEE3C4A),
+    onBackground = Color(0xFFFFFFFF),
+    onSurface = Color(0xFFFFFFFF)
+)
