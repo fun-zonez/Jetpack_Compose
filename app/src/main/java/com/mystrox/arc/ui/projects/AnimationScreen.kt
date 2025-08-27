@@ -8,6 +8,7 @@ import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateValue
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -16,11 +17,13 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -56,6 +59,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -73,6 +77,13 @@ import com.mystrox.arc.ui.theme.ArcTheme
 fun AnimationScreen(navController: NavHostController) {
     val colorScheme = colorScheme
     val scrollState = rememberScrollState()
+    val AnimationName = mapOf(
+        0 to "Map Loading Icon",
+        1 to "Expandable Cards",
+        2 to "Size Increasing Text",
+        3 to "Circle Ripple Static Speed",
+        4 to "Circle Ripple Dynamic Speed",
+    )
     Scaffold(
         topBar = {
             TopAppBar(
@@ -115,12 +126,13 @@ fun AnimationScreen(navController: NavHostController) {
 //                    contentColor = colorScheme.onPrimary
                     )
                 ) {
+                    val title = AnimationName[index] ?: "Animation not created"
                     Row(
                         modifier = Modifier.fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "AnimationName",
+                            text = title,
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
                             fontSize = 30.sp,
@@ -143,12 +155,13 @@ fun AnimationScreen(navController: NavHostController) {
 
 @Composable
 fun AnimationCard(id: Int?) {
-    if (id == 0) {
-        Anime0()
-    } else if (id == 1) {
-        Anime1()
-    } else {
-        Anime2()
+    when (id) {
+        0 -> Anime0()
+        1 -> Anime1()
+        2 -> Anime2()
+        3 -> Anime3()
+        4 -> Anime4()
+        else -> Anime0()
     }
 }
 
@@ -382,13 +395,145 @@ fun CustomCard4Anime1(titel: String, text: String) {
 @Composable
 fun Anime2() {
 
+    val infiniteTransition = rememberInfiniteTransition()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorScheme.background),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            "Animation", fontSize = infiniteTransition.animateFloat(
+                initialValue = 10f,
+                targetValue = 40f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(1000, easing = Ease),
+                    repeatMode = RepeatMode.Reverse
+                ),
+                label = "TODO"
+            ).value.sp, fontWeight = FontWeight.Bold, color = colorScheme.primary
+        )
+    }
 }
 
+@Composable
+fun Anime3() {
+    var isClicked by remember { mutableStateOf(false) }
+    val strokeWidth = animateFloatAsState(
+        targetValue = if (isClicked) 30f else 0f,
+        animationSpec = tween(3000, easing = Ease),
+        label = ""
+    )
+    val radius = animateFloatAsState(
+        targetValue = if (isClicked) 150f else 50f,
+        animationSpec = tween(1000, easing = Ease),
+    )
+    val colorScheme = colorScheme
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorScheme.background)
+    ) {
+        Canvas(
+            modifier = Modifier
+                .clickable(
+                    onClick = {
+                        isClicked = !isClicked
+                    }
+                )
+        ) {
+            drawCircle(
+                color = colorScheme.primary,
+                radius = radius.value,
+                style = Stroke(width = strokeWidth.value)
+            )
+            drawCircle(
+                color = colorScheme.primary,
+                radius = radius.value * 0.5f,
+                style = Stroke(width = strokeWidth.value * 0.8f)
+            )
+            drawCircle(
+                color = colorScheme.primary,
+                radius = radius.value * 1.5f,
+                style = Stroke(width = strokeWidth.value * 1.8f)
+            )
+        }
+    }
+}
+
+
+@SuppressLint("UnusedTransitionTargetStateParameter")
+@Composable
+fun Anime4() {
+    var isClicked by remember { mutableStateOf(false) }
+    val updateTransition = updateTransition(isClicked)
+
+    val radius1 = updateTransition.animateFloat(
+        targetValueByState = { if (isClicked) 500f else 10f },
+        transitionSpec = { tween(1000, easing = Ease) }
+    )
+    val radius2 = updateTransition.animateFloat(
+        targetValueByState = { if (isClicked) 350f else 10f },
+        transitionSpec = { tween(2000, easing = Ease) }
+    )
+    val radius3 = updateTransition.animateFloat(
+        targetValueByState = { if (isClicked) 150f else 10f },
+        transitionSpec = { tween(3000, easing = Ease) }
+    )
+
+    val colorScheme = colorScheme
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorScheme.background)
+    ) {
+        Canvas(
+            modifier = Modifier
+                .clickable(
+                    onClick = {
+                        isClicked = !isClicked
+                    }
+                )
+        ) {
+            drawCircle(
+                color = colorScheme.primary,
+                radius = radius1.value,
+                style = Stroke(width = 10f)
+            )
+            drawCircle(
+                color = colorScheme.primary,
+                radius = radius2.value,
+                style = Stroke(width = 10f)
+            )
+            drawCircle(
+                color = colorScheme.primary,
+                radius = radius3.value,
+                style = Stroke(width = 10f)
+            )
+        }
+    }
+}
+
+@Composable
+fun Anime5() {
+    val colorScheme = colorScheme
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .background(colorScheme.background)
+            .fillMaxSize()
+    ) {
+
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
 fun AnimationPreview() {
     ArcTheme(darkTheme = true) {
-        Anime1()
+        Anime5()
     }
 }
