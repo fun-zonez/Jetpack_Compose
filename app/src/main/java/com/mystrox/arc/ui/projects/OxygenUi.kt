@@ -3,8 +3,10 @@ package com.mystrox.arc.ui.projects
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
+import android.media.AudioManager
 import android.os.Build
-import androidx.activity.SystemBarStyle
+import android.provider.Settings
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,23 +25,19 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.systemBarsIgnoringVisibility
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.ScaffoldDefaults.contentWindowInsets
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,12 +55,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.mystrox.arc.R
 import com.mystrox.arc.ui.theme.DarkMyColors
 import com.mystrox.arc.ui.theme.LightMyColors
-import com.mystrox.arc.R
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -79,6 +78,7 @@ fun OxygenUi() {
         }
         return null
     }
+
     val context = LocalContext.current
     val activity = context.findActivity() ?: return
     val window = activity.window
@@ -99,16 +99,15 @@ fun OxygenUi() {
     }
 
 
-
     val darktheme = isSystemInDarkTheme()
     var isdarktheme by remember { mutableStateOf(darktheme) }
     MaterialTheme(
-        colorScheme = if(isdarktheme) DarkMyColors else LightMyColors,
+        colorScheme = if (isdarktheme) DarkMyColors else LightMyColors,
         typography = MaterialTheme.typography
 
     ) {
         val uiStates = remember {
-            mutableStateListOf(true, false, false, true, false, true, false,true)
+            mutableStateListOf(true, false, false, true, false, true, false, true)
         }
 
         Column(
@@ -128,7 +127,11 @@ fun OxygenUi() {
 //                        .width(50.dp)
                         .offset(y = 40.dp, x = 25.dp)
                 ) {
-                    val time = LocalTime.now().hour.toString() + ":" + LocalTime.now().minute.toString() + " " + LocalDate.now().dayOfWeek.toString().substring(0,3).lowercase().replaceFirstChar { it.uppercase() } + ", " + LocalDate.now().dayOfMonth + " " + LocalDate.now().month.toString().substring(0,3).lowercase().replaceFirstChar { it.uppercase() }
+                    val time =
+                        LocalTime.now().hour.toString() + ":" + LocalTime.now().minute.toString() + " " + LocalDate.now().dayOfWeek.toString()
+                            .substring(0, 3).lowercase()
+                            .replaceFirstChar { it.uppercase() } + ", " + LocalDate.now().dayOfMonth + " " + LocalDate.now().month.toString()
+                            .substring(0, 3).lowercase().replaceFirstChar { it.uppercase() }
                     Text(
                         time,
                         fontSize = 18.sp,
@@ -288,7 +291,8 @@ fun OxygenUi() {
                                 painter = painterResource(if (uiStates[7]) R.drawable.pause else R.drawable.play),
                                 contentDescription = "",
                                 tint = colorScheme.primary,
-                                modifier = Modifier.size(23.dp)
+                                modifier = Modifier
+                                    .size(23.dp)
                                     .clickable(
                                         true,
                                         onClick = {
@@ -318,7 +322,12 @@ fun OxygenUi() {
                         ),
                     contentAlignment = Alignment.BottomEnd
                 ) {
-                    val brightnessPointer = remember { mutableStateOf(0f) }
+                    val brightness = getSystemBrightness150(context)
+                    val brightnessPointer = remember { mutableStateOf(brightness.toFloat()) }
+                    LaunchedEffect(brightnessPointer.value) {
+                        setSystemBrightness(context, brightnessPointer.value.toInt())
+                    }
+
                     Box(
                         modifier = Modifier
                             .height(brightnessPointer.value.dp)
@@ -328,16 +337,18 @@ fun OxygenUi() {
                                 shape = RoundedCornerShape(
                                     bottomStart = 10.dp,
                                     bottomEnd = 10.dp,
-                                    topStart = if(brightnessPointer.value >= 140f) 10.dp else 0.dp,
-                                    topEnd =  if(brightnessPointer.value >= 140f) 10.dp else 0.dp
+                                    topStart = if (brightnessPointer.value >= 140f) 10.dp else 0.dp,
+                                    topEnd = if (brightnessPointer.value >= 140f) 10.dp else 0.dp
                                 )
                             )
                             .background(Color.White)
-                            .pointerInput(Unit){
+                            .pointerInput(Unit) {
                                 detectDragGestures { change, dragAmount ->
                                     change.consume()
-                                    brightnessPointer.value = (brightnessPointer.value - dragAmount.y).coerceIn(0f,150f)
+                                    brightnessPointer.value =
+                                        (brightnessPointer.value - dragAmount.y).coerceIn(0f, 150f)
                                     println(brightnessPointer.value)
+
                                 }
                             }
 
@@ -362,7 +373,8 @@ fun OxygenUi() {
                         ),
                     contentAlignment = Alignment.BottomEnd
                 ) {
-                    val volumePointer = remember { mutableStateOf(0f) }
+                    val volume = getSystemVolume(context)
+                    val volumePointer = remember { mutableStateOf(volume.toFloat()) }
                     Box(
                         modifier = Modifier
                             .height(volumePointer.value.dp)
@@ -372,15 +384,16 @@ fun OxygenUi() {
                                 shape = RoundedCornerShape(
                                     bottomStart = 10.dp,
                                     bottomEnd = 10.dp,
-                                    topStart = if(volumePointer.value >= 140f) 10.dp else 0.dp,
-                                    topEnd =  if(volumePointer.value >= 140f) 10.dp else 0.dp
+                                    topStart = if (volumePointer.value >= 140f) 10.dp else 0.dp,
+                                    topEnd = if (volumePointer.value >= 140f) 10.dp else 0.dp
                                 )
                             )
                             .background(Color.White)
                             .pointerInput(Unit) {
                                 detectDragGestures { change, dragAmount ->
                                     change.consume()
-                                    volumePointer.value = (volumePointer.value - dragAmount.y).coerceIn(0f,150f)
+                                    volumePointer.value =
+                                        (volumePointer.value - dragAmount.y).coerceIn(0f, 150f)
                                     println(volumePointer.value)
                                 }
                             }
@@ -741,9 +754,52 @@ fun OxygenUi() {
     }
 }
 
+fun getSystemBrightness150(context: Context): Int {
+    val systemBrightness = Settings.System.getInt(
+        context.contentResolver,
+        Settings.System.SCREEN_BRIGHTNESS,
+        125 // default
+    )
+    println(systemBrightness)
+    return mapRange(systemBrightness, 0, 255, 0, 150)
+}
+
+fun mapRange(value: Int, fromMin: Int, fromMax: Int, toMin: Int, toMax: Int): Int {
+    return ((value - fromMin) * (toMax - toMin) / (fromMax - fromMin)) + toMin
+}
+
+
+fun getSystemVolume(context: Context): Int {
+    val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+}
+
+fun setVolume(context: Context, level: Int) {
+    val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+    val newVolume = level.coerceIn(0, maxVolume) // prevent crash
+    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, 0)
+}
+
+fun setSystemBrightness(context: Context, level150: Int) {
+    if (Settings.System.canWrite(context)) {
+        val systemLevel = mapRange(level150, 0, 150, 0, 255)
+        Settings.System.putInt(
+            context.contentResolver,
+            Settings.System.SCREEN_BRIGHTNESS,
+            systemLevel
+        )
+    } else {
+        val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+        intent.data = ("package:" + context.packageName).toUri()
+        context.startActivity(intent)
+    }
+}
+
+
 @Preview(showBackground = true)
 @Composable
-fun OxygenDark(){
+fun OxygenDark() {
     MaterialTheme(
         colorScheme = DarkMyColors
 
@@ -754,7 +810,7 @@ fun OxygenDark(){
 
 @Preview(showBackground = true)
 @Composable
-fun OxygenLight(){
+fun OxygenLight() {
     MaterialTheme(
         colorScheme = LightMyColors
     ) {
