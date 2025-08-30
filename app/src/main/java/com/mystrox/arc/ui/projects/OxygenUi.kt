@@ -395,6 +395,8 @@ fun OxygenUi() {
                                     volumePointer.value =
                                         (volumePointer.value - dragAmount.y).coerceIn(0f, 150f)
                                     println(volumePointer.value)
+                                    setVolume(context, volumePointer.value.toInt())
+
                                 }
                             }
                     )
@@ -771,7 +773,9 @@ fun mapRange(value: Int, fromMin: Int, fromMax: Int, toMin: Int, toMax: Int): In
 
 fun getSystemVolume(context: Context): Int {
     val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-    return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+    val volume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+    println("volume:" + volume)
+    return volume
 }
 
 fun setVolume(context: Context, level: Int) {
